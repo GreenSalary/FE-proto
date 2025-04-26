@@ -12,11 +12,17 @@ const Container = styled.div`
   margin: 50px auto;
   background-color: white;
   
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   /* 모바일 화면에서 너비 조정 */
   @media (max-width: 768px) {
     width: 100%;
     max-width: 400px;
     height: auto;
+    box-shadow: none;
     min-height: 500px;
   }
 `;
@@ -80,8 +86,7 @@ const OverlayPanel = styled.div`
   height: 100%;
   width: 100%;
   text-align: center;
-  background-color: #00cba4;
-  background-image: linear-gradient(135deg, #00cba4, #00b39e);
+  background-color: var(--color-primary);
   overflow: visible;
 `;
 
@@ -96,7 +101,7 @@ const SVGImage = styled.img`
   bottom: ${props => props.bottom || 'auto'};
   transform: ${props => props.transform || 'none'};
   opacity: ${props => props.opacity || 1};
-  z-index: -1;
+  z-index: 0;
 `;
 
 // 장식용 도형 컴포넌트
@@ -133,7 +138,7 @@ const Title = styled.h2`
   font-size: 28px;
   margin-bottom: 20px;
   font-weight: 500;
-  color: ${props => props.light ? 'white' : '#00cba4'};
+  color: ${props => props.light ? 'white' : 'var(--color-primary)'};
   text-align: center;
   position: relative;
   z-index: 2;
@@ -152,7 +157,7 @@ const Subtitle = styled.p`
 const Button = styled.button`
   border-radius: 30px;
   border: ${props => props.outline ? '1px solid white' : 'none'};
-  background-color: ${props => props.outline ? 'transparent' : '#00cba4'};
+  background-color: ${props => props.outline ? 'transparent' : 'var(--color-primary)'};
   color: ${props => props.outline ? 'white' : 'white'};
   font-size: 14px;
   font-weight: bold;
@@ -264,7 +269,7 @@ const RadioLabel = styled.label`
 
 const RadioInput = styled.input`
   margin-right: 6px;
-  accent-color: #00cba4;
+  accent-color: var(--color-submit-btn);
 `;
 
 const ForgotPassword = styled.a`
@@ -275,7 +280,7 @@ const ForgotPassword = styled.a`
   align-self: flex-end;
   
   &:hover {
-    color: #00cba4;
+    color: var(--color-primary);
   }
 `;
 
@@ -285,6 +290,8 @@ const Logo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1; 
+  position: relative; 
   
   img {
     width: 120px;
@@ -297,8 +304,8 @@ const MobileToggle = styled.button`
   display: none;
   margin-top: 20px;
   background: none;
-  border: 1px solid #00cba4;
-  color: #00cba4;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
   padding: 8px 15px;
   border-radius: 20px;
   cursor: pointer;
@@ -314,9 +321,9 @@ const MobileToggle = styled.button`
 `;
 
 // Main Component
-const AuthForm = () => {
+const AuthForm = ({ onLogin }) => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [userType, setUserType] = useState('고용주');
+  const [userType, setUserType] = useState('employee');
   
   // 폼 상태 관리
   const [loginData, setLoginData] = useState({
@@ -344,12 +351,20 @@ const AuthForm = () => {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     console.log('로그인 시도:', loginData);
+
+    if (onLogin) {
+      onLogin(userType);  // 로그인 버튼 눌렀을 때 이동
+    }
   };
-  
+
   // 회원가입 폼 제출 핸들러
   const handleSignupSubmit = (e) => {
     e.preventDefault();
     console.log('회원가입 시도:', signupData);
+
+    if (onLogin) {
+      onLogin(userType);  // 회원가입 버튼 눌렀을 때도 이동
+    }
   };
   
   // 입력 필드 변경 핸들러 - 로그인
@@ -375,9 +390,9 @@ const AuthForm = () => {
       {/* 초록색 패널 - 왼쪽/오른쪽으로 이동 (모바일에서는 숨김) */}
       <OverlayContainer isSignUp={isSignUp}>
         <OverlayPanel>
-          <DecorativeShape top="-5%" left="-15%" width="70%" height="50%" transform="rotate(-25deg)" opacity="0.1" borderRadius="10px" />
-          <DecorativeShape bottom="-5%" right="-15%" width="70%" height="50%" transform="rotate(-25deg)" opacity="0.08" borderRadius="10px" />
-          <DecorativeShape bottom="10%" left="10%" width="100px" height="100px" opacity="0.05" borderRadius="50%" />
+        <SVGImage src="/shape1.svg" width="700px" top="-120px" left="-300px" style={{ transform: "rotate(0)" }} />
+        <SVGImage src="/shape2.svg" width="700px" top="-100px" left="-450px" style={{ transform: "rotate(0)" }} />
+        <SVGImage src="/circle.svg" width="200px" bottom="-90px" left="-100px" />
           <Logo>
             <img src="/logo.svg" alt="Green Salary Logo" />
           </Logo>
@@ -419,8 +434,8 @@ const AuthForm = () => {
               <RadioInput 
                 type="radio" 
                 name="userType" 
-                value="고용주"
-                checked={userType === '고용주'} 
+                value="employer"
+                checked={userType === 'employer'} 
                 onChange={handleUserTypeChange}
               />
               고용주
@@ -429,8 +444,8 @@ const AuthForm = () => {
               <RadioInput 
                 type="radio" 
                 name="userType" 
-                value="매장"
-                checked={userType === '매장'} 
+                value="store"
+                checked={userType === 'store'} 
                 onChange={handleUserTypeChange}
               />
               매장
@@ -439,8 +454,8 @@ const AuthForm = () => {
               <RadioInput 
                 type="radio" 
                 name="userType" 
-                value="근로자"
-                checked={userType === '근로자'} 
+                value="employee"
+                checked={userType === 'employee'} 
                 onChange={handleUserTypeChange}
               />
               근로자
@@ -476,7 +491,7 @@ const AuthForm = () => {
             </InputGroup>
           </InputContainer>
           
-          <ForgotPassword href="#">비밀번호를 잊으셨나요?</ForgotPassword>
+          {/* <ForgotPassword href="#">비밀번호를 잊으셨나요?</ForgotPassword> */}
           
           <ButtonContainer>
             <Button type="submit">SIGN IN</Button>
@@ -502,8 +517,8 @@ const AuthForm = () => {
               <RadioInput 
                 type="radio" 
                 name="userType" 
-                value="고용주"
-                checked={userType === '고용주'} 
+                value="employer"
+                checked={userType === 'employer'} 
                 onChange={handleUserTypeChange}
               />
               고용주
@@ -512,8 +527,8 @@ const AuthForm = () => {
               <RadioInput 
                 type="radio" 
                 name="userType" 
-                value="근로자"
-                checked={userType === '근로자'} 
+                value="employee"
+                checked={userType === 'employee'} 
                 onChange={handleUserTypeChange}
               />
               근로자
