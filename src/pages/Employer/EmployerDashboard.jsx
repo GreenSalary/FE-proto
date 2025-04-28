@@ -13,7 +13,7 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f8f9fe;
+  background-color: #F8F8F8;
 `;
 
 const MainArea = styled.div`
@@ -37,11 +37,11 @@ const SidebarWrapper = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  background-color: white;
+  background-color: ${props => props.activeNav === 'clock' ? '#FFFFFF' : '#F8F9FE'};
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: ${props => props.activeNav === 'home' ? 'hidden' : 'auto'};
 `;
 
 const EmployerDashboard = ({ userType }) => {
@@ -73,13 +73,13 @@ const EmployerDashboard = ({ userType }) => {
       <NavbarTop />
       <MainArea>
         <SidebarWrapper>
-          <NavbarLeft 
-            userType={userType} 
-            activeIcon={activeNav}
+          <NavbarLeft
+             userType={userType}
+             activeIcon={activeNav}
             onNavChange={handleNavChange}
           />
         </SidebarWrapper>
-        <ContentArea>
+        <ContentArea activeNav={activeNav}>
           {renderContent()}
         </ContentArea>
       </MainArea>
