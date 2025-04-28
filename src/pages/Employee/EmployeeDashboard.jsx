@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import NavbarLeft from '../../components/NavbarLeft';
 import NavbarTop from '../../components/NavbarTop';
+
+//호출할 component
+import EmployeeHome from './EmployeeHome';
+import EmployeeClock from './EmployeeClock';
+import EmployeeMyPage from './EmployeeMyPage';
 
 const PageContainer = styled.div`
   display: flex;
@@ -39,16 +44,38 @@ const ContentArea = styled.div`
 `;
 
 const EmployeeDashboard = ({userType}) => {
+  const [activeNav, setActiveNav] = useState('home');
+
+  const handleNavChange = (navId) => {
+    setActiveNav(navId);
+  };
+
+  const renderContent = () => {
+    switch(activeNav) {
+      case 'home':
+        return <EmployeeHome />;
+      case 'clock':
+        return <EmployeeClock />;
+      case 'mypage':
+        return <EmployeeMyPage />;
+      default:
+        return <EmployeeHome />;
+    }
+  };
+
   return (
     <PageContainer>
       <NavbarTop />
       <MainArea>
         <SidebarWrapper>
-          <NavbarLeft userType={userType} />
+          <NavbarLeft 
+            userType={userType} 
+            activeIcon={activeNav}
+            onNavChange={handleNavChange}
+          />
         </SidebarWrapper>
         <ContentArea>
-          <h2>근로자 캘린더 자리</h2>
-          <div style={{ height: '2000px' }}>스크롤 테스트용 긴 컨텐츠</div>
+          {renderContent()}
         </ContentArea>
       </MainArea>
     </PageContainer>

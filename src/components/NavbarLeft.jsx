@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   FaHome, FaClock, FaPlus, FaClipboardList,
@@ -40,38 +40,29 @@ const IconButton = styled.button`
   padding: 10px;
   border-radius: 12px;
   transition: all 0.2s;
-
+  
   &:hover {
     color: #00cba4;
   }
 `;
 
-// 메뉴 구성 정의
 const iconMap = {
   home: { icon: <FaHome />, position: 'top' },
   clock: { icon: <FaClock />, position: 'top' },
   list: { icon: <FaClipboardList />, position: 'top' },
   plus: { icon: <FaPlus />, position: 'top' },
-  user: { icon: <FaUser />, position: 'bottom' },
+  mypage: { icon: <FaUser />, position: 'bottom' },
   logout: { icon: <FaSignOutAlt />, position: 'bottom' },
 };
 
 const visibleByRole = {
-  employer: ['home', 'clock', 'list', 'plus', 'user', 'logout'],
-  employee: ['home', 'clock', 'user', 'logout'],
+  employer: ['home', 'clock', 'list', 'plus', 'mypage', 'logout'],
+  employee: ['home', 'clock', 'mypage', 'logout'],
   store: ['clock', 'logout'],
 };
 
-const NavbarLeft = ({ userType = 'employer' }) => {
+const NavbarLeft = ({ userType = 'employer', activeIcon, onNavChange }) => {
   const visibleIcons = visibleByRole[userType] || [];
-
-  const [activeIcon, setActiveIcon] = useState(visibleIcons[0] || '');
-
-  useEffect(() => {
-    if (visibleIcons.length > 0) {
-      setActiveIcon(visibleIcons[0]);
-    }
-  }, [userType]);
 
   return (
     <Sidebar>
@@ -82,13 +73,20 @@ const NavbarLeft = ({ userType = 'employer' }) => {
             <IconButton
               key={id}
               active={activeIcon === id}
-              onClick={() => setActiveIcon(id)}
+              onClick={() => {
+                if (id !== 'logout') {
+                  onNavChange(id);
+                } else {
+                  alert('로그아웃');
+                  // 여기에 로그아웃 로직 추가
+                }
+              }}
             >
               {iconMap[id].icon}
             </IconButton>
           ))}
       </TopIcons>
-
+      
       <BottomIcons>
         {visibleIcons
           .filter(id => iconMap[id].position === 'bottom')
@@ -97,10 +95,11 @@ const NavbarLeft = ({ userType = 'employer' }) => {
               key={id}
               active={activeIcon === id}
               onClick={() => {
-                if (id === 'logout') {
-                  alert('로그아웃');
+                if (id !== 'logout') {
+                  onNavChange(id);
                 } else {
-                  setActiveIcon(id);
+                  alert('로그아웃');
+                  // 여기에 로그아웃 로직 추가
                 }
               }}
             >

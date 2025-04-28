@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import NavbarLeft from '../../components/NavbarLeft';
-import NavbarTop from '../../components/NavbarTop';
+
+import StoreClock from './StoreClock';
 
 const PageContainer = styled.div`
   display: flex;
@@ -35,19 +36,37 @@ const ContentArea = styled.div`
   border-radius: 15px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   padding: 20px;
-  overflow-y: auto; /* 스크롤 */
+  overflow-y: auto;
 `;
 
-const StoreDashboard = ({userType}) => {
+const StoreDashboard = ({ userType }) => {
+  const [activeNav, setActiveNav] = useState('clock'); 
+
+  const handleNavChange = (navId) => {
+    setActiveNav(navId);
+  };
+
+  const renderContent = () => {
+    switch (activeNav) {
+      case 'clock':
+        return <StoreClock />;
+      default:
+        return <StoreClock />;
+    }
+  };
+
   return (
     <PageContainer>
       <MainArea>
         <SidebarWrapper>
-          <NavbarLeft userType={userType} />
+          <NavbarLeft 
+            userType={userType} 
+            activeIcon={activeNav}
+            onNavChange={handleNavChange}
+          />
         </SidebarWrapper>
         <ContentArea>
-          <h2>매장 qr 자리</h2>
-
+          {renderContent()}
         </ContentArea>
       </MainArea>
     </PageContainer>
