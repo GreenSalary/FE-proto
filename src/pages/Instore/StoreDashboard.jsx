@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import NavbarLeft from '../../components/NavbarLeft';
-
 import StoreClock from './StoreClock';
 
 const PageContainer = styled.div`
@@ -40,33 +39,14 @@ const ContentArea = styled.div`
 `;
 
 const StoreDashboard = ({ userType }) => {
-  const [activeNav, setActiveNav] = useState('clock'); 
-
-  const handleNavChange = (navId) => {
-    setActiveNav(navId);
-  };
-
-  const renderContent = () => {
-    switch (activeNav) {
-      case 'clock':
-        return <StoreClock />;
-      default:
-        return <StoreClock />;
-    }
-  };
-
   return (
     <PageContainer>
       <MainArea>
         <SidebarWrapper>
-          <NavbarLeft 
-            userType={userType} 
-            activeIcon={activeNav}
-            onNavChange={handleNavChange}
-          />
+          <NavbarLeft userType={userType} />
         </SidebarWrapper>
         <ContentArea>
-          {renderContent()}
+          <StoreClock />
         </ContentArea>
       </MainArea>
     </PageContainer>

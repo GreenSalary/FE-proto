@@ -323,7 +323,7 @@ const MobileToggle = styled.button`
 // Main Component
 const AuthForm = ({ onLogin }) => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [userType, setUserType] = useState('employee');
+  const [userType, setUserType] = useState('employer');
   
   // 폼 상태 관리
   const [loginData, setLoginData] = useState({

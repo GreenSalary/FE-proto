@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate, useParams  } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -26,7 +27,6 @@ const CardGrid = styled.div`
 const Card = styled.div`
   background-color: white;
   border-radius: 12px;
-  border: solid 0.1px #D9D9D9;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
@@ -129,8 +129,11 @@ const CopyButton = styled.button`
   }
 `;
 
-const EmployeeCards = () => {
+const EmployerPlus = () => {
+  const navigate = useNavigate();
+  const { storeId } = useParams();
   const [copySuccess, setCopySuccess] = useState('');
+
   
   // 샘플 직원 데이터
   const employees = [
@@ -207,7 +210,11 @@ const EmployeeCards = () => {
         ))}
       </CardGrid>
       
-      <AddButton>
+      <AddButton
+        onClick={() => {
+          navigate(`/employer/${storeId}/addmember`);
+        }}
+      >
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
@@ -216,4 +223,4 @@ const EmployeeCards = () => {
   );
 };
 
-export default EmployeeCards;
+export default EmployerPlus;

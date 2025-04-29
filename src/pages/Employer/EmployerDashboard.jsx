@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useLocation } from 'react-router-dom';
 import NavbarLeft from '../../components/NavbarLeft';
 import NavbarTop from '../../components/NavbarTop';
-
-import EmployerHome from './EmployerHome';
-import EmployerClock from './EmployerClock';
-import EmployerMembers from './EmployerMembers';
-import EmployerPlus from './EmployerPlus';
-import EmployerMypage from './EmployerMypage';
+import { Outlet } from 'react-router-dom';
 
 const PageContainer = styled.div`
   display: flex;
@@ -37,50 +33,32 @@ const SidebarWrapper = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  background-color: ${props => props.activeNav === 'clock' ? '#FFFFFF' : '#F8F9FE'};
+  background-color: ${({ pathname }) => {
+    if (pathname.includes('/list')) return 'transparent'; 
+    if (pathname.includes('/clock') || pathname.includes('/addmember')) return '#FFFFFF';
+    return '#F8F9FE';
+  }};
   border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: ${({ pathname }) =>
+    pathname.includes('/list') ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.05)'};
   padding: 20px;
-  overflow-y: ${props => props.activeNav === 'home' ? 'hidden' : 'auto'};
+  overflow-y: ${({ pathname }) =>
+    pathname.endsWith('/home') || pathname.endsWith('/employer') ? 'hidden' : 'auto'};
 `;
 
 const EmployerDashboard = ({ userType }) => {
-  const [activeNav, setActiveNav] = useState('home');
-
-  const handleNavChange = (navId) => {
-    setActiveNav(navId);
-  };
-
-  const renderContent = () => {
-    switch(activeNav) {
-      case 'home':
-        return <EmployerHome />;
-      case 'clock':
-        return <EmployerClock />;
-      case 'list':
-        return <EmployerMembers />;
-      case 'plus':
-        return <EmployerPlus />;
-      case 'mypage':
-        return <EmployerMypage />;
-      default:
-        return <EmployerHome />;
-    }
-  };
+  const { pathname } = useLocation();
 
   return (
     <PageContainer>
       <NavbarTop />
       <MainArea>
         <SidebarWrapper>
-          <NavbarLeft
-             userType={userType}
-             activeIcon={activeNav}
-            onNavChange={handleNavChange}
-          />
+          <NavbarLeft userType={userType} />
         </SidebarWrapper>
-        <ContentArea activeNav={activeNav}>
-          {renderContent()}
+
+        <ContentArea pathname={pathname}>
+          <Outlet /> {/* 여기에 하위 페이지가 자동 렌더링됨 */}
         </ContentArea>
       </MainArea>
     </PageContainer>

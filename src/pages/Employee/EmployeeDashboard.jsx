@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // 🔥 useState 추가
 import styled from 'styled-components';
 import NavbarLeft from '../../components/NavbarLeft';
 import NavbarTop from '../../components/NavbarTop';
-
-//호출할 component
-import EmployeeHome from './EmployeeHome';
-import EmployeeClock from './EmployeeClock';
-import EmployeeMyPage from './EmployeeMyPage';
+import { Outlet, useLocation } from 'react-router-dom';
 
 const PageContainer = styled.div`
   display: flex;
@@ -36,32 +32,21 @@ const SidebarWrapper = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  background-color: white;
+  background-color: ${({ pathname }) => {
+    if (pathname.includes('/list')) return 'transparent'; 
+    if (pathname.includes('/clock') || pathname.includes('/addstore')) return '#FFFFFF';
+    return '#F8F9FE';
+  }};
   border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: ${({ pathname }) =>
+    pathname.includes('/list') ? 'none' : '0 2px 8px rgba(0, 0, 0, 0.05)'};
   padding: 20px;
-  overflow-y: auto; /* 스크롤 */
+  overflow-y: auto;
 `;
 
-const EmployeeDashboard = ({userType}) => {
-  const [activeNav, setActiveNav] = useState('home');
-
-  const handleNavChange = (navId) => {
-    setActiveNav(navId);
-  };
-
-  const renderContent = () => {
-    switch(activeNav) {
-      case 'home':
-        return <EmployeeHome />;
-      case 'clock':
-        return <EmployeeClock />;
-      case 'mypage':
-        return <EmployeeMyPage />;
-      default:
-        return <EmployeeHome />;
-    }
-  };
+const EmployeeDashboard = ({ userType }) => {
+  const { pathname } = useLocation();
+  const [showModal, setShowModal] = useState(false); // 🔥 모달 상태 추가
 
   return (
     <PageContainer>
@@ -70,12 +55,13 @@ const EmployeeDashboard = ({userType}) => {
         <SidebarWrapper>
           <NavbarLeft 
             userType={userType} 
-            activeIcon={activeNav}
-            onNavChange={handleNavChange}
+            onPlusClick={() => setShowModal(true)} // 🔥 Plus 눌렀을 때 모달 열기
           />
         </SidebarWrapper>
-        <ContentArea>
-          {renderContent()}
+
+        <ContentArea pathname={pathname}>
+          <Outlet context={{ showModal, setShowModal }} /> 
+          {/* 🔥 Outlet에 context로 넘겨줄 수도 있음 (더 깔끔) */}
         </ContentArea>
       </MainArea>
     </PageContainer>
